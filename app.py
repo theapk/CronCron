@@ -1,21 +1,20 @@
+import json
+
 from flask import Flask, request, jsonify
-from flask_sqlalchemy import SQLAlchemy
+from bson import json_util
+from pymongo import MongoClient
 from datetime import datetime
-from models import Job
 import subprocess
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
-db = SQLAlchemy(app)
 
-class Job(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(80), nullable=False)
-    command = db.Column(db.String(120), nullable=False)
-    schedule = db.Column(db.String(120), nullable=False)
-    last_run = db.Column(db.DateTime, nullable=True)
-    status = db.Column(db.String(20), nullable=True)
+client = MongoClient('localhost', 27017)
+db = client['croncron']
+users_collection = db['users']
+collection = db['jobs']
 
+def parse_json(data):
+    return json.loads(json_util.dumps(data))
 def is_process_running(process_name):
     try:
         output = subprocess.check_output('pgrep -fl ' + process_name, shell=True)
@@ -27,18 +26,46 @@ def is_process_running(process_name):
         return False
 
 
+@app.route('/', methods=['GET'])
+def hello():
+    return 'Hello, World!'
+
+
+from bson.objectid import ObjectId
+
+
+@app.route('/jobs/<job_id>', methods=['PUT'])
+def update_job(job_id):
+    print(f"job_id: {job_id}")
+    job_id = ObjectId(job_id)
+    job = collection.find_one({"_id": job_id})
+    print(f"job: {job}")
+    if not job:
+        return jsonify({'message': 'Job not found'}), 404
+    job['last_run'] = request.json.get('last_run', job['last_run'])
+    job['status'] = request.json.get('status', job['status'])
+    collection.replace_one({'_id': job_id}, job)
+    return jsonify({'message': 'Job updated'})
+
+
 @app.route('/jobs', methods=['GET'])
 def get_jobs():
-    jobs = Job.query.all()
-    return jsonify([{'name': job.name, 'command': job.command, 'schedule': job.schedule, 'last_run': job.last_run, 'status': job.status} for job in jobs])
+    jobs = collection.find()
+    # for job in jobs:
+    #     print(f"jobs: {job}")
+    results = [{'id': ObjectId(job['_id']), 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
+      'last_run': job['last_run'], 'status': job['status']} for job in jobs]
+    print(f"results: {results}")
+    res = parse_json(results)
+    return jsonify(res)
+
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
-    job = Job(name=request.json['name'], command=request.json['command'], schedule=request.json['schedule'])
-    db.session.add(job)
-    db.session.commit()
-    return jsonify({'id': job.id})
+    job = {'name': request.json['name'], 'command': request.json['command'], 'schedule': request.json['schedule']}
+    result = collection.insert_one(job)
+    return jsonify({'id': str(result.inserted_id)})
+
 
 if __name__ == '__main__':
-    db.create_all()
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=8151)
