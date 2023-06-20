@@ -54,12 +54,22 @@ def get_jobs():
     jobs = collection.find()
     # for job in jobs:
     #     print(f"jobs: {job}")
-    results = [{'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
+    results = [{'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
     # res = parse_json(results)
     return jsonify(results)
 
+@app.route('/jobs/<user_id>', methods=['GET'])
+def get_users_jobs(user_id):
+    jobs = collection.find({"user_id": user_id})
+    # for job in jobs:
+    #     print(f"jobs: {job}")
+    results = [{'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
+                'last_run': job['last_run'], 'status': job['status']} for job in jobs]
+    print(f"results: {results}")
+    # res = parse_json(results)
+    return jsonify(results)
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
