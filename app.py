@@ -78,7 +78,7 @@ def get_users_jobs(user_id):
 @app.route('/api/jobs', methods=['GET'])
 def get_all_jobs():
     jobs = collection.find()
-    return jsonify([{'name': job['name'], 'command': job['command'], 'schedule': job['schedule'], 'last_run': job['last_run'], 'status': job['status'], 'output': job['output']} for job in jobs])
+    return jsonify([{'name': job['name'], 'command': job['command'], 'schedule': job['schedule'], 'last_run': job['last_run'], 'status': job['status'], 'output': job['output'], 'user_id': job['user_id']} for job in jobs])
 
 @app.route('/dashboard', methods=['GET'])
 def jobs():
