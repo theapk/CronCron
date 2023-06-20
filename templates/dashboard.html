@@ -17,6 +17,7 @@
             <th>Last Run</th>
             <th>Status</th>
             <th>Output</th>
+            <th>User Id</th>
         </tr>
         <!-- Jobs will be inserted here by JavaScript -->
     </table>
@@ -36,6 +37,7 @@
                             <th>Last Run</th>
                             <th>Status</th>
                             <th>Output</th>
+                            <th>User Id</th>
                         </tr>
                     `;
                     // Add the jobs to the table
@@ -48,14 +50,15 @@
                             <td>${job.last_run}</td>
                             <td>${job.status}</td>
                             <td>${job.output}</td>
+                            <TD>${job.user_id}
                         `;
                         jobsTable.appendChild(row);
                     }
                 });
         }
 
-        // Update the jobs every 10 seconds
-        setInterval(updateJobs, 10000);
+        // Update the jobs every 3 seconds
+        setInterval(updateJobs, 3000);
         // And also update them right now
         updateJobs();
     </script>
