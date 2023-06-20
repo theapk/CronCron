@@ -57,10 +57,10 @@ def get_jobs():
     results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
-    res = json.dumps(results)
-    print(f"res: {res}")
-    print(f"res type: {type(res)}")
-    return jsonify(res)
+    # res = json.dumps(results)
+    # print(f"res: {res}")
+    # print(f"res type: {type(res)}")
+    return jsonify(results)
 
 @app.route('/jobs/<user_id>', methods=['GET'])
 def get_users_jobs(user_id):
@@ -70,10 +70,10 @@ def get_users_jobs(user_id):
     results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
-    res = json.dumps(results)
-    print(f"res: {res}")
-    print(f"res type: {type(res)}")
-    return jsonify(res)
+    # res = json.dumps(results)
+    # print(f"res: {res}")
+    # print(f"res type: {type(res)}")
+    return jsonify(results)
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
