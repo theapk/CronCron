@@ -2,6 +2,7 @@ import json
 
 from flask import Flask, request, jsonify
 from bson import json_util
+from bson.objectid import ObjectId
 from pymongo import MongoClient
 from datetime import datetime
 import subprocess
@@ -13,8 +14,11 @@ db = client['croncron']
 users_collection = db['users']
 collection = db['jobs']
 
+
 def parse_json(data):
     return json.loads(json_util.dumps(data))
+
+
 def is_process_running(process_name):
     try:
         output = subprocess.check_output('pgrep -fl ' + process_name, shell=True)
@@ -29,9 +33,6 @@ def is_process_running(process_name):
 @app.route('/', methods=['GET'])
 def hello():
     return 'Hello, World!'
-
-
-from bson.objectid import ObjectId
 
 
 @app.route('/jobs/<job_id>', methods=['PUT'])
@@ -54,7 +55,7 @@ def get_jobs():
     # for job in jobs:
     #     print(f"jobs: {job}")
     results = [{'id': ObjectId(job['_id']), 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
-      'last_run': job['last_run'], 'status': job['status']} for job in jobs]
+                'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
     res = parse_json(results)
     return jsonify(res)
