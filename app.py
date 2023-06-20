@@ -106,7 +106,7 @@ def jobs():
 @app.route('/jobs', methods=['POST'])
 def create_job():
 
-    res = request.json()
+    res = request.json
     print(f"res: {res}")
     print(f"res type: {type(res)}")
     job = {
