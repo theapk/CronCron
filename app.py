@@ -52,11 +52,21 @@ def update_job(job_id):
 @app.route('/jobs', methods=['GET'])
 def get_jobs():
     jobs = collection.find()
-    # for job in jobs:
-    #     print(f"jobs: {job}")
-    results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'],
-                'schedule': job['schedule'],
-                'last_run': job['last_run'], 'status': job['status']} for job in jobs]
+    for job in jobs:
+        print(f"jobs: {job}")
+    results = [
+        {
+            'id': str(job['_id']),
+            'name': job['name'],
+            'user_id': job['user_id'],
+            'name': job['name'],
+            'command': job['command'],
+            'schedule': job['schedule'],
+            'last_run': job['last_run'],
+            'status': job['status'],
+            'output': job['output']
+        } for job in jobs
+    ]
     print(f"results: {results}")
     # res = json.dumps(results)
     # print(f"res: {res}")
@@ -105,7 +115,6 @@ def jobs():
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
-
     res = request.json
     print(f"res: {res}")
     print(f"res type: {type(res)}")

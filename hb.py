@@ -34,16 +34,16 @@ def read_output_file(file_path):
 
 def monitor_cron_jobs(cron_command, job_id, user_id):
     r = requests.get(FLASK_APP_URL + f"/{job_id}")
-    print(f"r: {r}")
+    print(f"r: {r.json()}")
 
     while True:
         # Fetch jobs from Flask app
         response = requests.get(FLASK_APP_URL)
-        jobs = response.json()
+        jobs = json.loads(response.text)
         print(f"jobs: {jobs}")
 
         # Find job with specified job_id
-        job = next((job for job in jobs if job['id'] == job_id), None)
+        job = next((job for job in jobs if str(job['id']) == job_id), None)
 
         if job is None:
             # If job does not exist, create new job
