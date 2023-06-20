@@ -85,6 +85,7 @@ def get_all_jobs():
     return jsonify(
         [
             {
+                '_id': str(job['_id']),
                 'name': job['name'],
                 'command': job['command'],
                 'schedule': job['schedule'],
