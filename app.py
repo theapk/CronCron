@@ -58,7 +58,7 @@ def get_jobs():
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
     # res = parse_json(results)
-    return jsonify(results)
+    return {json.loads(json_util.dumps(results))}
 
 @app.route('/jobs/<user_id>', methods=['GET'])
 def get_users_jobs(user_id):
