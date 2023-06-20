@@ -86,7 +86,7 @@ def jobs():
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
-    job = {'name': request.json['name'], 'command': request.json['command'], 'schedule': request.json['schedule']}
+    job = {'_id': request.json['job_id'], 'command': request.json['command'], 'schedule': request.json['schedule', 'last_run'], 'user_id': request.json['user_id']}
     result = collection.insert_one(job)
     return jsonify({'id': str(result.inserted_id)})
 
