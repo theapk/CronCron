@@ -57,8 +57,10 @@ def get_jobs():
     results = [{'id': ObjectId(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
-    # res = parse_json(results)
-    return {json.loads(json_util.dumps(results))}
+    res = json.loads(results)
+    print(f"res: {res}")
+    print(f"res type: {type(res)}")
+    return {json_util.dumps(res)}
 
 @app.route('/jobs/<user_id>', methods=['GET'])
 def get_users_jobs(user_id):
