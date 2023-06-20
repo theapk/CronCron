@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Monitor</title>
+    <style>
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Job Monitor</h1>
+    <table id="jobsTable">
+        <tr>
+            <th>Name</th>
+            <th>Command</th>
+            <th>Schedule</th>
+            <th>Last Run</th>
+            <th>Status</th>
+            <th>Output</th>
+        </tr>
+        <!-- Jobs will be inserted here by JavaScript -->
+    </table>
+
+    <script>
+        function updateJobs() {
+            fetch('/api/jobs')
+                .then(response => response.json())
+                .then(jobs => {
+                    let jobsTable = document.getElementById('jobsTable');
+                    // Clear the table
+                    jobsTable.innerHTML = `
+                        <tr>
+                            <th>Name</th>
+                            <th>Command</th>
+                            <th>Schedule</th>
+                            <th>Last Run</th>
+                            <th>Status</th>
+                            <th>Output</th>
+                        </tr>
+                    `;
+                    // Add the jobs to the table
+                    for (let job of jobs) {
+                        let row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${job.name}</td>
+                            <td>${job.command}</td>
+                            <td>${job.schedule}</td>
+                            <td>${job.last_run}</td>
+                            <td>${job.status}</td>
+                            <td>${job.output}</td>
+                        `;
+                        jobsTable.appendChild(row);
+                    }
+                });
+        }
+
+        // Update the jobs every 10 seconds
+        setInterval(updateJobs, 10000);
+        // And also update them right now
+        updateJobs();
+    </script>
+</body>
+</html>

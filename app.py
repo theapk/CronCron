@@ -1,6 +1,6 @@
 import json
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from bson import json_util
 from bson.objectid import ObjectId
 from pymongo import MongoClient
@@ -74,6 +74,15 @@ def get_users_jobs(user_id):
     # print(f"res: {res}")
     # print(f"res type: {type(res)}")
     return jsonify(results)
+
+@app.route('/api/jobs', methods=['GET'])
+def get_jobs():
+    jobs = collection.find()
+    return jsonify([{'name': job['name'], 'command': job['command'], 'schedule': job['schedule'], 'last_run': job['last_run'], 'status': job['status'], 'output': job['output']} for job in jobs])
+
+@app.route('/dashboard', methods=['GET'])
+def jobs():
+    return render_template('dashboard.html')
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
