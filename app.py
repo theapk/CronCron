@@ -60,7 +60,7 @@ def get_jobs():
     res = json.dumps(results)
     print(f"res: {res}")
     print(f"res type: {type(res)}")
-    return res
+    return jsonify(res)
 
 @app.route('/jobs/<user_id>', methods=['GET'])
 def get_users_jobs(user_id):
@@ -73,7 +73,7 @@ def get_users_jobs(user_id):
     res = json.dumps(results)
     print(f"res: {res}")
     print(f"res type: {type(res)}")
-    return res
+    return jsonify(res)
 
 @app.route('/jobs', methods=['POST'])
 def create_job():
