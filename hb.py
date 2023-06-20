@@ -8,7 +8,7 @@ from datetime import datetime
 # Your Flask application URL
 from bson import ObjectId
 
-FLASK_APP_URL = 'http://137.220.62.134:5000/jobs'
+FLASK_APP_URL = 'http://137.220.62.134/jobs'
 OUTPUT_FILE_PATH = 'output.txt'  # Replace with the actual output file path
 
 def is_process_running(process_name):
