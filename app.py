@@ -54,20 +54,23 @@ def get_jobs():
     jobs = collection.find()
     # for job in jobs:
     #     print(f"jobs: {job}")
-    results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
+    results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'],
+                'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
     # res = json.dumps(results)
     # print(f"res: {res}")
     # print(f"res type: {type(res)}")
     return jsonify(results)
+
 
 @app.route('/jobs/<user_id>', methods=['GET'])
 def get_users_jobs(user_id):
     jobs = collection.find({"user_id": user_id})
     # for job in jobs:
     #     print(f"jobs: {job}")
-    results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'], 'schedule': job['schedule'],
+    results = [{'id': str(job['_id']), 'user_id': job['user_id'], 'name': job['name'], 'command': job['command'],
+                'schedule': job['schedule'],
                 'last_run': job['last_run'], 'status': job['status']} for job in jobs]
     print(f"results: {results}")
     # res = json.dumps(results)
@@ -75,18 +78,46 @@ def get_users_jobs(user_id):
     # print(f"res type: {type(res)}")
     return jsonify(results)
 
+
 @app.route('/api/jobs', methods=['GET'])
 def get_all_jobs():
     jobs = collection.find()
-    return jsonify([{'name': job['name'], 'command': job['command'], 'schedule': job['schedule'], 'last_run': job['last_run'], 'status': job['status'], 'output': job['output'], 'user_id': job['user_id']} for job in jobs])
+    return jsonify(
+        [
+            {
+                'name': job['name'],
+                'command': job['command'],
+                'schedule': job['schedule'],
+                'last_run': job['last_run'],
+                'status': job['status'],
+                'output': job['output'],
+                'user_id': job['user_id']
+            } for job in jobs
+        ]
+    )
+
 
 @app.route('/dashboard', methods=['GET'])
 def jobs():
     return render_template('dashboard.html')
 
+
 @app.route('/jobs', methods=['POST'])
 def create_job():
-    job = {'_id': request.json['job_id'], 'command': request.json['command'], 'schedule': request.json['schedule'], 'user_id': request.json['user_id'], 'last_run': datetime.now().strftime('%Y-%m-%d %H:%M:%S'), 'status': request.json['status'], 'name': request.json['name']}
+
+    res = request.json()
+    print(f"res: {res}")
+    print(f"res type: {type(res)}")
+    job = {
+        '_id': res['job_id'],
+        'command': res['command'],
+        'schedule': res['schedule'],
+        'user_id': res['user_id'],
+        'last_run': res['last_run'],
+        'status': res['status'],
+        'name': res['name'],
+        'output': res['output']
+    }
     result = collection.insert_one(job)
     return jsonify({'id': str(result.inserted_id)})
 
